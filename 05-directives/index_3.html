@@ -10,6 +10,9 @@
 	- Its name (customerInfo) corresponds to the directive's isolate scope property customerInfo.
 	- Its value (=info) tells $compile to bind to the info attribute.
 
+	As the name suggests, the isolate scope of the directive isolates everything except models that you've explicitly added to the scope: {} hash object. 
+	This is helpful when building reusable components because it prevents a component from changing your model state except for the models that you explicitly pass in.
+
 	Note: These =attr attributes in the scope option of directives are normalized just like directive names. 
 	To bind to the attribute in <div bind-to-this="thing">, you'd specify a binding of =bindToThis.
 	-->
