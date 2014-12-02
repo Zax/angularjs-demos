@@ -1,0 +1,24 @@
+{
+  "name": "angularjs",
+  "version": "0.0.1",
+  "homepage": "https://github.com/Zax/angularjs-demos",
+  "authors": [
+    "ZaX <zacchi.paolo@gmail.com>"
+  ],
+  "description": "AngularJs examples",
+  "keywords": [
+    "angularjs"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angularjs": "~1.3.5",
+    "bootstrap": "~3.3.1"
+  }
+}

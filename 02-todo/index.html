@@ -1,13 +1,13 @@
 <!doctype html>
 <html ng-app="todoApp">
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
-    <script src="todo.js"></script>
-    <link rel="stylesheet" href="todo.css">
+  <script src="../bower_components/angularjs/angular.min.js"></script>
+  <script src="todo.js"></script>
+  <link rel="stylesheet" href="todo.css">
 </head>
 <body>
-<h2>Todo</h2>
-<div ng-controller="TodoController">
+  <h2>Todo</h2>
+  <div ng-controller="TodoController">
     <span>{{remaining()}} of {{todos.length}} remaining</span>
     [ <a href="" ng-click="archive()">archive</a> ]
     <ul class="unstyled">
@@ -21,6 +21,6 @@
                placeholder="add new todo here">
         <input class="btn-primary" type="submit" value="add">
     </form>
-</div>
+  </div>
 </body>
 </html>
