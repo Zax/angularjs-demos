@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+  <!--
+  Esempio preso da https://code.angularjs.org/1.2.26/docs/guide/forms
+-->
+<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
+<script src="../bower_components/angularjs/angular.min.js"></script>
+<script>
+  angular.module('formExample', [])
+  .controller('ExampleController', ['$scope', function($scope) {
+    $scope.master = {};
+
+    $scope.update = function(user) {
+      $scope.master = angular.copy(user);
+    };
+
+    $scope.reset = function() {
+      $scope.user = angular.copy($scope.master);
+    };
+
+    $scope.reset();
+  }]);
+</script>
+</head>
+<body ng-app="formExample">
+  <div ng-controller="ExampleController" class="container">
+    <div class="page-header"><h1>Simple Form</h1></div>
+    <form novalidate class="simple-form">
+      <div class="form-group">
+        <label class="control-label">Name</label>
+        <input type="text" ng-model="user.name" class="form-control" placeholder="name"/>
+      </div>
+      <div class="form-group">
+        <label class="control-label">Email</label>
+        <input type="email" ng-model="user.email" class="form-control" placeholder="email"/>
+      </div>
+      <div class="form-group">
+        <label class="control-label">Gender</label>
+        <div class="radio form-control">
+          <label>
+            <input type="radio" ng-model="user.gender" value="male" />male
+          </label>
+          <label>
+            <input type="radio" ng-model="user.gender" value="female" />female
+          </label>
+        </div>
+      </div>
+      <button ng-click="reset()" class="btn btn-primary">RESET</button>
+      <button ng-click="update(user)" class="btn btn-primary">SAVE</button>
+    </form>
+    <div class="page-header"><h1>Status</h1></div>
+    <pre>form = {{user | json}}</pre>
+    <pre>master = {{master | json}}</pre>
+  </div>
+</body>
+</html>
