@@ -18,6 +18,7 @@
   where we want to ensure that all $timeouts have completed before completing the test. 
   We also want to remove the $interval if the directive is deleted so we don't introduce a memory leak.
 -->
+<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
 <script src="../bower_components/angularjs/angular.min.js"></script>
 <script>
   angular.module('docsTimeDirective', [])
@@ -57,8 +58,15 @@
 </script>
 </head>
 <body ng-app="docsTimeDirective">
-  <div ng-controller="Controller">
-    Date format: <input ng-model="format"> <hr/>
+  <div ng-controller="Controller" class="container">
+    <div class="page-header"><h1>Creating a Directive that Manipulates the DOM</h1></div>
+    <div class="form-group">
+      <div class="input-group col-xs-6 col-md-4">
+        <label class="sr-only">Date format</label>
+        <div class="input-group-addon">Date format</div>
+        <input class="form-control" ng-model="format">
+      </div>
+    </div>
     Current time is: <span my-current-time="format"></span>
   </div>
 </body>

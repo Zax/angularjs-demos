@@ -18,6 +18,7 @@
     background-color: #D0D0D0;
   }
 </style>
+<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
 <script src="../bower_components/angularjs/angular.min.js"></script>
 <script>
   angular.module('form-example2', []).directive('contenteditable', function() {
@@ -44,7 +45,10 @@
 </script>
 </head>
 <body ng-app="form-example2">
-  <div contentEditable="true" ng-model="content" title="Click to edit">Some</div>
-  <pre>model = {{content}}</pre>
+  <div class="container">
+    <div class="page-header"><h1>Implementing custom form controls (using ngModel)</h1></div>
+    <div contentEditable="true" ng-model="content" title="Click to edit">Some</div>
+    <pre>model = {{content}}</pre>
+  </div>
 </body>
 </html>
