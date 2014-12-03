@@ -4,26 +4,28 @@
   <!--
   Esempio preso da https://code.angularjs.org/1.2.26/docs/guide/directive 
   Mostra l'uso di una semplice direttiva 'my-customer'.
-  -->
-  <script src="../bower_components/angularjs/angular.min.js"></script>
-    <script>
-    angular.module('docsSimpleDirective', [])
-    .controller('Controller', ['$scope', function($scope) {
-      $scope.customer = {
+-->
+<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
+<script src="../bower_components/angularjs/angular.min.js"></script>
+<script>
+  angular.module('docsSimpleDirective', [])
+  .controller('Controller', ['$scope', function($scope) {
+    $scope.customer = {
       name: 'Naomi',
       address: '1600 Amphitheatre'
-      };
-    }])
-    .directive('myCustomer', function() {
-      return {
+    };
+  }])
+  .directive('myCustomer', function() {
+    return {
       template: 'Name: {{customer.name}} Address: {{customer.address}}'
-      };
-    });
-  </script>
+    };
+  });
+</script>
 </head>
-  <body ng-app="docsSimpleDirective">
-    <div ng-controller="Controller">
+<body ng-app="docsSimpleDirective">
+  <div ng-controller="Controller" class="container">
+    <div class="page-header"><h1>Creating Directives</h1></div>
     <div my-customer></div>
-    </div>
-  </body>
+  </div>
+</body>
 </html>
