@@ -1,54 +1,54 @@
 <!doctype html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
-    <script src="../bower_components/angularjs/angular.min.js"></script>
-    <script>
-        angular.module('app', [])
-                .controller('ctrl', ['$scope', function($scope) {
-                }])
-                .directive('myInput', function() {
-                    return {
-                        restrict: 'E',
-                        template: function(tElem, tAttrs){
-                            return '<div class="form-group">' +
-                                    (tAttrs.label ? '<label class="control-label" for="' + tAttrs.name + '">' + tAttrs.label + '</label>' : '')+
-                                    (tAttrs.info ? '<span class="label label-info pull-right" tooltip-trigger="click" tooltip-placement="bottom" tooltip="' + tAttrs.info + '"><span class="glyphicon glyphicon-info-sign"></span></span>' : '') +
-                                    (tAttrs.suffix ? '<div class="input-group">' : '') +
-                                    '<div class="has-feedback">' +
-                                    '<input id="' + tAttrs.name + '" name="' + tAttrs.name +'" ng-model="model" ng-disabled="disabled" class="form-control"/>' +
-                                    '<span class="glyphicon form-control-feedback"></span>' +
-                                    '</div>' +
-                                    (tAttrs.suffix ? '<div class="input-group-addon">'+ tAttrs.suffix +'</div>' : '') +
-                                    (tAttrs.suffix ? '</div>' : '') +
-                            '</div>';
-                        },
-                        scope: {
-                            model: '=',
-                            disabled: '='
-                        }
-                    };
+  <!--
+  Esempio preso da http://odetocode.com/blogs/scott/archive/2014/10/13/confirm-password-validation-in-angularjs.aspx
+  Mostra l'uso della direttiva 'compare-to' per verificare che un campo sia uguale ad un altro.
+-->
+<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
+<script src="../bower_components/angularjs/angular.min.js"></script>
+<script>
+  angular.module('App', [])
+  .directive('compareTo', function() {
+    return {
+            require: "ngModel",
+            scope: {
+                otherModelValue: "=compareTo"
+            },
+            link: function(scope, element, attributes, ngModel) {
+                 
+                ngModel.$validators.compareTo = function(modelValue) {
+                    return modelValue == scope.otherModelValue;
+                };
+     
+                scope.$watch("otherModelValue", function() {
+                    ngModel.$validate();
                 });
-    </script>
+            }
+        };
+  });
+</script>
 </head>
-<body ng-app="app">
-<div ng-controller="ctrl" class="container">
-    <div class="page-header"><h1>My Input Directive</h1></div>
-    <div class="page-header"><h2>Parameters</h2></div>
-    <div class="row">
-        <div class="form-group col-md-4">
-            <label class="control-label">Model</label>
-            <input class="form-control" type="text" ng-model="parameters.model">
-        </div>
-        <div class="form-group col-md-4">
-            <label class="control-label">Disabled</label>
-            <input class="form-control" type="checkbox" ng-model="parameters.disabled">
-        </div>
-    </div>
-    <div class="page-header"><h2>Result</h2></div>
-    <my-input label="Label" suffix="suffix" info="tooltip info" model="parameters.model" disabled="parameters.disabled" name="txtInput"></my-input>
-    <my-input model="parameters.model" disabled="parameters.disabled" name="txtInput"></my-input>
-</div>
+<body ng-app="App">
+  <div class="container">
+    <div class="page-header"><h1>Confirm Password Validation in AngularJS</h1></div>
+    <form name="userForm" novalidate>
+      <!-- PASSWORD -->
+      <div class="form-group has-feedback" ng-class="{ 'has-error':userForm.password.$invalid && !userForm.password.$pristine, 'has-success':!userForm.password.$invalid && !userForm.password.$pristine }">
+        <label class="control-label">Password</label>
+        <input type="password" name="password" class="form-control" ng-model="user.password" ng-minlength="6" placeholder="password">
+        <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="!userForm.password.$invalid && !userForm.password.$pristine"></span>
+        <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="userForm.password.$invalid && !userForm.password.$pristine"></span>
+        <p ng-show="userForm.password.$error.minlength" class="help-block">Password is too short.</p>
+      </div>
+      <!-- CONFIRM PASSWORD -->
+      <div class="form-group has-feedback" ng-class="{ 'has-error':userForm.confirmpassword.$invalid && !userForm.confirmpassword.$pristine, 'has-success':!userForm.confirmpassword.$invalid && !userForm.confirmpassword.$pristine }">
+        <label class="control-label">Confirm Password</label>
+        <input type="password" name="confirmpassword" class="form-control" ng-model="user.confirmpassword" placeholder="confirm password" compare-to="user.password">
+        <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="!userForm.confirmpassword.$invalid && !userForm.confirmpassword.$pristine"></span>
+        <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="userForm.confirmpassword.$invalid && !userForm.confirmpassword.$pristine"></span>
+        <p ng-show="userForm.confirmpassword.$error.compareTo" class="help-block">Password not equal.</p>
+      </div>
+  </div>
 </body>
 </html>

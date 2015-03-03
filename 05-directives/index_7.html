@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="../bower_components/angularjs/angular.min.js"></script>
+    <script>
+        angular.module('app', [])
+                .controller('ctrl', ['$scope', function($scope) {
+                }])
+                .directive('myInput', function() {
+                    return {
+                        restrict: 'E',
+                        template: function(tElem, tAttrs){
+                            return '<div class="form-group">' +
+                                    (tAttrs.label ? '<label class="control-label" for="' + tAttrs.name + '">' + tAttrs.label + '</label>' : '')+
+                                    (tAttrs.info ? '<span class="label label-info pull-right" tooltip-trigger="click" tooltip-placement="bottom" tooltip="' + tAttrs.info + '"><span class="glyphicon glyphicon-info-sign"></span></span>' : '') +
+                                    (tAttrs.suffix ? '<div class="input-group">' : '') +
+                                    '<div class="has-feedback">' +
+                                    '<input id="' + tAttrs.name + '" name="' + tAttrs.name +'" ng-model="model" ng-disabled="disabled" class="form-control"/>' +
+                                    '<span class="glyphicon form-control-feedback"></span>' +
+                                    '</div>' +
+                                    (tAttrs.suffix ? '<div class="input-group-addon">'+ tAttrs.suffix +'</div>' : '') +
+                                    (tAttrs.suffix ? '</div>' : '') +
+                            '</div>';
+                        },
+                        scope: {
+                            model: '=',
+                            disabled: '='
+                        }
+                    };
+                });
+    </script>
+</head>
+<body ng-app="app">
+<div ng-controller="ctrl" class="container">
+    <div class="page-header"><h1>My Input Directive</h1></div>
+    <div class="page-header"><h2>Parameters</h2></div>
+    <div class="row">
+        <div class="form-group col-md-4">
+            <label class="control-label">Model</label>
+            <input class="form-control" type="text" ng-model="parameters.model">
+        </div>
+        <div class="form-group col-md-4">
+            <label class="control-label">Disabled</label>
+            <input class="form-control" type="checkbox" ng-model="parameters.disabled">
+        </div>
+    </div>
+    <div class="page-header"><h2>Result</h2></div>
+    <my-input label="Label" suffix="suffix" info="tooltip info" model="parameters.model" disabled="parameters.disabled" name="txtInput"></my-input>
+    <my-input model="parameters.model" disabled="parameters.disabled" name="txtInput"></my-input>
+</div>
+</body>
+</html>
