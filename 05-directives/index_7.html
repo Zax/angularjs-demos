@@ -11,22 +11,40 @@
                 .directive('myInput', function() {
                     return {
                         restrict: 'E',
-                        template: function(tElem, tAttrs){
+                        scope: false,
+                        template: function(tElem, tAttrs) {
                             return '<div class="form-group">' +
-                                    (tAttrs.label ? '<label class="control-label" for="' + tAttrs.name + '">' + tAttrs.label + '</label>' : '')+
+                                    (tAttrs.label ? '<label class="control-label" for="' + tAttrs.name + '">' + tAttrs.label + '</label>' : '') +
                                     (tAttrs.info ? '<span class="label label-info pull-right" tooltip-trigger="click" tooltip-placement="bottom" tooltip="' + tAttrs.info + '"><span class="glyphicon glyphicon-info-sign"></span></span>' : '') +
                                     (tAttrs.suffix ? '<div class="input-group">' : '') +
                                     '<div class="has-feedback">' +
-                                    '<input id="' + tAttrs.name + '" name="' + tAttrs.name +'" ng-model="model" ng-disabled="disabled" class="form-control"/>' +
+                                    '<input id="' + tAttrs.name + '" name="' + tAttrs.name + '" class="form-control"/>' +
                                     '<span class="glyphicon form-control-feedback"></span>' +
                                     '</div>' +
-                                    (tAttrs.suffix ? '<div class="input-group-addon">'+ tAttrs.suffix +'</div>' : '') +
+                                    (tAttrs.suffix ? '<div class="input-group-addon">' + tAttrs.suffix + '</div>' : '') +
                                     (tAttrs.suffix ? '</div>' : '') +
+                                    '<div ng-transclude></div>'
                             '</div>';
                         },
-                        scope: {
-                            model: '=',
-                            disabled: '='
+                        replace: true,
+                        priority: 1001,
+                        transclude: true,
+                        compile: function (tElement, tAttrs) {
+                            if (tAttrs.form && tAttrs.name){
+                                tElement.attr('ng-class','{\'has-error\' : ' + tAttrs.form + '.' + tAttrs.name + '.$invalid && !' + tAttrs.form + '.' + tAttrs.name + '.$pristine }');
+                                tElement.attr('ng-class','{\'has-error\' : true }');
+                            }
+                            var tInput = tElement.find('input');
+                            // muove (o rimuove) gli attributi dati alla direttiva spostandoli alla vera input
+                            angular.forEach(tAttrs, function (value, key) {
+                                // cerca la chiave originale dell'attributo
+                                var originalKey = tAttrs.$attr[key];
+                                if (key.charAt(0) === '$' || key === 'class') return;
+                                tElement.removeAttr(originalKey);
+                                if (key === 'label' || key === 'info' || key === 'suffix' || key === 'name' || key === 'form') return;
+                                tInput.attr(originalKey, value);
+                            });
+                            return;
                         }
                     };
                 });
@@ -37,18 +55,25 @@
     <div class="page-header"><h1>My Input Directive</h1></div>
     <div class="page-header"><h2>Parameters</h2></div>
     <div class="row">
-        <div class="form-group col-md-4">
+        <div class="form-group col-sm-4">
             <label class="control-label">Model</label>
             <input class="form-control" type="text" ng-model="parameters.model">
         </div>
-        <div class="form-group col-md-4">
+        <div class="form-group col-sm-4">
             <label class="control-label">Disabled</label>
             <input class="form-control" type="checkbox" ng-model="parameters.disabled">
         </div>
     </div>
-    <div class="page-header"><h2>Result</h2></div>
-    <my-input label="Label" suffix="suffix" info="tooltip info" model="parameters.model" disabled="parameters.disabled" name="txtInput"></my-input>
-    <my-input model="parameters.model" disabled="parameters.disabled" name="txtInput"></my-input>
+    <form name="myForm" novalidate>
+    <div class="page-header"><h4>Directive with label/suffix/info/model/disabled</h4></div>
+    <my-input label="Label" suffix="suffix" info="tooltip info" ng-model="parameters.model" ng-disabled="parameters.disabled" type="text" name="txtInput1" form="myForm"></my-input>
+    <div class="page-header"><h4>Directive with only name</h4></div>
+    <my-input name="txtInput2"></my-input>
+    <div class="page-header"><h4>Directive with errors</h4></div>
+    <my-input label="Label" suffix="suffix" info="tooltip info" ng-model="parameters.model" ng-disabled="parameters.disabled" name="txtInput2" type="number" form="myForm" required>
+        <p ng-show="myForm.txtInput2.$invalid">Error!</p>
+    </my-input>
+    </form>
 </div>
 </body>
 </html>
