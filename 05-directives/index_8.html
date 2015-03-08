@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+    <!--
+    Esempio tratto da https://github.com/paulyoder/angular-bootstrap-show-errors
+    -->
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="../bower_components/angularjs/angular.min.js"></script>
+    <script>
+        angular.module('app', [])
+                .directive('showErrors', ['$timeout', '$interpolate', function($timeout, $interpolate) {
+                    var getShowSuccess, getTrigger, linkFn;
+                    getTrigger = function(options) {
+                        var trigger;
+                        trigger = 'blur';
+                        if (options && (options.trigger != null)) {
+                            trigger = options.trigger;
+                        }
+                        return trigger;
+                    };
+                    getShowSuccess = function(options) {
+                        var showSuccess;
+                        showSuccess = true;
+                        if (options && (options.showSuccess != null)) {
+                            showSuccess = options.showSuccess;
+                        }
+                        return showSuccess;
+                    };
+                    linkFn = function(scope, el, attrs, formCtrl) {
+                        var blurred, inputEl, inputName, inputNgEl, options, showSuccess, toggleClasses, trigger;
+                        blurred = false;
+                        options = scope.$eval(attrs.showErrors);
+                        showSuccess = getShowSuccess(options);
+                        trigger = getTrigger(options);
+                        inputEl = el[0].querySelector('.form-control[name]');
+                        inputNgEl = angular.element(inputEl);
+                        inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
+                        if (!inputName) {
+                            throw "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class";
+                        }
+                        inputNgEl.bind(trigger, function() {
+                            blurred = true;
+                            return toggleClasses(formCtrl[inputName].$invalid);
+                        });
+                        scope.$watch(function() {
+                            return formCtrl[inputName] && formCtrl[inputName].$invalid;
+                        }, function(invalid) {
+                            if (!blurred) {
+                                return;
+                            }
+                            return toggleClasses(invalid);
+                        });
+                        scope.$on('show-errors-check-validity', function() {
+                            return toggleClasses(formCtrl[inputName].$invalid);
+                        });
+                        scope.$on('show-errors-reset', function() {
+                            return $timeout(function() {
+                                el.removeClass('has-error');
+                                el.removeClass('has-success');
+                                return blurred = false;
+                            }, 0, false);
+                        });
+                        return toggleClasses = function(invalid) {
+                            el.toggleClass('has-error', invalid);
+                            if (showSuccess) {
+                                return el.toggleClass('has-success', !invalid);
+                            }
+                        };
+                    };
+                    return {
+                        restrict: 'A',
+                        require: '^form',
+                        compile: function(elem, attrs) {
+                            if (attrs['showErrors'].indexOf('skipFormGroupCheck') === -1) {
+                                if (!(elem.hasClass('form-group') || elem.hasClass('input-group'))) {
+                                    throw "show-errors element does not have the 'form-group' or 'input-group' class";
+                                }
+                            }
+                            return linkFn;
+                        }
+                    };
+                }]);
+    </script>
+</head>
+<body ng-app="app">
+<div class="container">
+    <div class="page-header"><h1>ShoErrors Directive</h1></div>
+    <form name="myForm" novalidate>
+        <div class="form-group" show-errors>
+            <label class="control-label">Required Field (validate on blur)</label>
+            <div class="has-feedback">
+                <input type="text" name="txt1" ng-model="model1" class="form-control" placeholder="name" required=""/>
+                <span class="glyphicon form-control-feedback"></span>
+            </div>
+        </div>
+        <div class="form-group" show-errors="{ trigger: 'keypress' }">
+            <label class="control-label">Required Field (validate on keypress)</label>
+            <div class="has-feedback">
+                <input type="text" name="txt2" ng-model="model2" class="form-control" placeholder="name" required=""/>
+                <span class="glyphicon form-control-feedback"></span>
+            </div>
+        </div>
+        <div class="form-group" show-errors="{ trigger: 'keypress', showSuccess: false }">
+            <label class="control-label">Required Field (validate on keypress, show only error)</label>
+            <div class="has-feedback">
+                <input type="text" name="txtNa3" ng-model="model3" class="form-control" placeholder="name" required=""/>
+                <span class="glyphicon form-control-feedback"></span>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>
