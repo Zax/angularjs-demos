@@ -1,20 +1,20 @@
 <!doctype html>
 <html ng-app="es2App">
-  <head>
+<head>
     <script src="../bower_components/angularjs/angular.min.js"></script>
-      <script>
+    <script>
         angular.module('es2App', [])
-          .controller('NameCtrl', ['$scope', function($scope) {
-              $scope.firstName = 'John';
-              $scope.lastName = 'Smith';
-          }]);
-      </script>
-  </head>
-  <body ng-controller="NameCtrl">
-    First name:<input ng-model="firstName" type="text"/>
-    <br>
-    Last name:<input ng-model="lastName" type="text"/>
-    <br>
-    Hello {{firstName}} {{lastName}}
-  </body>
+                .controller('NameCtrl', ['$scope', function($scope) {
+                    $scope.firstName = 'John';
+                    $scope.lastName = 'Smith';
+                }]);
+    </script>
+</head>
+<body ng-controller="NameCtrl">
+First name:<input ng-model="firstName" type="text"/>
+<br>
+Last name:<input ng-model="lastName" type="text"/>
+<br>
+Hello {{firstName}} {{lastName}}
+</body>
 </html>
