@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+    <!--
+    Esempio preso da http://odetocode.com/blogs/scott/archive/2014/10/13/confirm-password-validation-in-angularjs.aspx
+    Mostra l'uso della direttiva 'compare-to' per verificare che un campo sia uguale ad un altro.
+  -->
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="../bower_components/angularjs/angular.min.js"></script>
+    <script>
+        angular
+                .module('App', [])
+                .directive('compareTo', function() {
+                    return {
+                        require: "ngModel",
+                        scope: {
+                            otherModelValue: "=compareTo"
+                        },
+                        link: function(scope, element, attributes, ngModel) {
+
+                            ngModel.$validators.compareTo = function(modelValue) {
+                                return modelValue == scope.otherModelValue;
+                            };
+
+                            scope.$watch("otherModelValue", function() {
+                                ngModel.$validate();
+                            });
+                        }
+                    };
+                });
+    </script>
+</head>
+<body ng-app="App">
+<div class="container">
+    <div class="page-header"><h1>Confirm Password Validation in AngularJS</h1></div>
+    <form name="userForm" novalidate>
+        <!-- PASSWORD -->
+        <div class="form-group has-feedback" ng-class="{ 'has-error':userForm.password.$invalid && !userForm.password.$pristine, 'has-success':!userForm.password.$invalid && !userForm.password.$pristine }">
+            <label class="control-label">Password</label>
+            <input type="password" name="password" class="form-control" ng-model="user.password" ng-minlength="6" placeholder="password">
+            <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="!userForm.password.$invalid && !userForm.password.$pristine"></span>
+            <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="userForm.password.$invalid && !userForm.password.$pristine"></span>
+            <p ng-show="userForm.password.$error.minlength" class="help-block">Password is too short.</p>
+        </div>
+        <!-- CONFIRM PASSWORD -->
+        <div class="form-group has-feedback" ng-class="{ 'has-error':userForm.confirmpassword.$invalid && !userForm.confirmpassword.$pristine, 'has-success':!userForm.confirmpassword.$invalid && !userForm.confirmpassword.$pristine }">
+            <label class="control-label">Confirm Password</label>
+            <input type="password" name="confirmpassword" class="form-control" ng-model="user.confirmpassword" placeholder="confirm password" compare-to="user.password">
+            <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="!userForm.confirmpassword.$invalid && !userForm.confirmpassword.$pristine"></span>
+            <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="userForm.confirmpassword.$invalid && !userForm.confirmpassword.$pristine"></span>
+            <p ng-show="userForm.confirmpassword.$error.compareTo" class="help-block">Password not equal.</p>
+        </div>
+</div>
+</body>
+</html>

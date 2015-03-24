@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+    <!--
+    Esempio preso da https://code.angularjs.org/1.2.26/docs/guide/directive
+
+    Directives that want to modify the DOM typically use the link option.
+    link takes a function with the following signature, function link(scope, element, attrs) { ... } where:
+
+      - scope is an Angular scope object.
+      - element is the jqLite-wrapped element that this directive matches.
+      - attrs is a hash object with key-value pairs of normalized attribute names and their corresponding attribute values.
+
+    In our link function, we want to update the displayed time once a second,
+    or whenever a user changes the time formatting string that our directive binds to.
+    We will use the $interval service to call a handler on a regular basis.
+    This is easier than using $timeout but also works better with end-to-end testing,
+    where we want to ensure that all $timeouts have completed before completing the test.
+    We also want to remove the $interval if the directive is deleted so we don't introduce a memory leak.
+  -->
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="../bower_components/angularjs/angular.min.js"></script>
+    <script>
+        angular
+                .module('docsTimeDirective', [])
+                .controller('Controller', ['$scope', function($scope) {
+                    $scope.format = 'M/d/yy h:mm:ss a';
+                }])
+
+                .directive('myCurrentTime', ['$interval', 'dateFilter', function($interval, dateFilter) {
+
+                    function link(scope, element, attrs) {
+                        var format,
+                                timeoutId;
+
+                        function updateTime() {
+                            element.text(dateFilter(new Date(), format));
+                        }
+
+                        scope.$watch(attrs.myCurrentTime, function(value) {
+                            format = value;
+                            updateTime();
+                        });
+
+                        element.on('$destroy', function() {
+                            $interval.cancel(timeoutId);
+                        });
+
+                        // start the UI update process; save the timeoutId for canceling
+                        timeoutId = $interval(function() {
+                            updateTime(); // update DOM
+                        }, 1000);
+                    }
+                    return {
+                        link: link
+                    };
+                }]);
+    </script>
+</head>
+<body ng-app="docsTimeDirective">
+<div ng-controller="Controller" class="container">
+    <div class="page-header"><h1>Creating a Directive that Manipulates the DOM</h1></div>
+    <div class="form-group">
+        <div class="input-group col-xs-6 col-md-4">
+            <label class="sr-only">Date format</label>
+            <div class="input-group-addon">Date format</div>
+            <input class="form-control" ng-model="format">
+        </div>
+    </div>
+    Current time is: <span my-current-time="format"></span>
+</div>
+</body>
+</html>
